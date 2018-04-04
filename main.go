@@ -21,8 +21,9 @@ func auth(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 	  user, password, _ := r.BasicAuth()
 	  if !checkCredentials(user, password) {
-		 http.Error(w, "Unauthorized.", 401)
-		 return
+		w.Header().Set("WWW-Authenticate", "Basic realm=\"Access to the site requires auth\"")
+		http.Error(w, "Unauthorized.", 401)
+		return
 	  }
 	  handler(w, r)
 	}
